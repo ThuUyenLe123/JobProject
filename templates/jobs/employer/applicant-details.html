@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load is_already_saved %}
+{% block title %}
+    Applicant details
+{% endblock title %}
+
+{% block content %}
+<section class="site-section">
+    <div class="container">
+        <div class="main-colm">
+            <div class="detail-01">
+                <div class="row detail-01-row mt30 ex-reverse-col m-mt0">
+                    <div class="col-12 col-lg-8">
+                        <div class="detail-01-ttl bold m-mt20">
+                            {{ applicant.job.title }}
+                        </div>
+                        
+                        <div class="detail-01-cnt mt30">
+                            <div class="detail-01-table">
+                                <div class="row detail-01-row-col">
+                                    <div class="col-12 col-sm-6 col-md-6 col-lg-6 detail-01-left detail-01-col">
+                                        <div class="detail-01-table-td row">
+                                            <div class="col-2 icon"><i class="fa fa-bar-chart job__location"></i></div>
+                                            <div class="col-6">
+                                                <label class="detail-01-cnt-lb">Experience:</label>
+                                                <div class="detail-01-info">{{ applicant.experience }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-01-table-td row">
+                                            <div class="col-2 icon"><i class="fa fa-certificate job__location"></i></div>
+                                            <div class="col-6">
+                                                <label class="detail-01-cnt-lb">Certificate:</label>
+                                                <div class="detail-01-info">{{ applicant.certificate }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-01-table-td row">
+                                            <div class="col-2 icon"><i class="fa fa-address-card job__location"></i></div>
+                                            <div class="col-6">
+                                                <label class="detail-01-cnt-lb">Type:</label>
+                                                {% if applicant.type == '1' %}
+                                                <div class="detail-01-info">Full time</div>
+                                                {% elif applicant.type == '2' %}
+                                                <div class="detail-01-info">Part time</div>
+                                                {% else %}
+                                                <div class="detail-01-info">Internship</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-6 col-md-6 col-lg-6 detail-01-right detail-01-col">
+                                        <div class="detail-01-table-td row">
+                                            <div class="col-2 icon"><i class="fa fa-map-marker job__location"></i></div>
+                                            <div class="col-6">
+                                                <label class="detail-01-cnt-lb">Location:</label>
+                                                <div class="detail-01-info">
+                                                    <a target="_blank" href="" class="text-join text-blue-bright">{{ applicant.location }}</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-01-table-td row">
+                                            <div class="col-2 icon"><i class="fa fa-list-alt job__location"></i></div>
+                                            <div class="col-6">
+                                                <label class="detail-01-cnt-lb">Category:</label>
+                                                <div class="detail-01-info">
+                                                    <a target="_blank" href="">{{ applicant.job.category }}</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="detail-01-table-td ex-border row">
+                                            <div class="col-2 icon"><i class="fa fa-dollar job__location"></i></div>
+                                            <div class="col-6">
+                                                <label class="detail-01-cnt-lb">Salary:</label>
+                                                <div class="detail-01-info">{{ applicant.salary }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="mt30 d-pc">
+                        <div class="detail-01-row-attach">
+                            <div class="detail-01-row-attach-ttl text-uppercase"><i class="fa fa-paperclip job__location"></i>Attachments</div>
+                            <span ><a href="{{ applicant.file.url }}" class="btn btn-outline-white-primary btn-sm"><i class="fa fa-download applicant__download"></i>Download CV</a> </span>
+                        </div>
+                    </div>
+                     
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 ex-bor-bott">
+                        <div class="jobsame-01">
+                            <div class="jobsame-01-cap">
+                                <div class="txc user-box">
+                                    <figure class="user-box-fig mt15 m-mt10">
+                                        <img src="{{ applicant.applicant.image.url }}" width="120" height="120" alt="avatar" class="jsx-1710786971">
+                                    </figure>
+                                    <div class="user-box-name mt25">{{ applicant.applicant.user.get_full_name }}</div>
+                                    <div class="user-box-info mt20 text-left">
+                                        <p>
+                                            <b>Date of birth:</b>
+                                            <span class="ml-1">{{ applicant.applicant.dob }}</span>
+                                        </p>
+                                        <p>
+                                            <b>Sex:</b>
+                                            <span class="ml-1">{{ applicant.applicant.gender }}</span>
+                                        </p>
+                                        <p>
+                                            <b>Marital status:</b>
+                                            <span class="ml-1">{{ applicant.applicant.marital_status }}</span>
+                                        </p>
+                                        <p>
+                                            <b>Location:</b>
+                                            <span class="ml-1">{{ applicant.applicant.location }}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="save-applicant">
+                            {% if request.user.is_authenticated and request.user.role == 'employer' %}
+                                {% is_already_saved applicant request.user as is_saved %}
+                                {% if is_saved %}
+                                    <button class="btn btn-outline-white-primary"><i class="fa fa-heart"></i>Save</button>
+                                {% else %}
+                                    <form action="{% url 'jobs:applicant-save' applicant.id %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="applicant" value="{{ applicant.id }}">
+                                        <button class="btn btn-outline-white-primary"><i class="fa fa-heart-o"></i>Save</button>
+                                    </form>
+                                {% endif %}
+                            {% elif request.user.role == 'employer' %}
+                                <form action="{% url 'jobs:applicant-save' applicant.id %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="applicant" value="{{ applicant.id }}">
+                                    <button class="btn btn-outline-white-primary"><i class="fa fa-heart-o"></i>Save</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>   
+                    
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+</section>
+
+
+{% endblock %}

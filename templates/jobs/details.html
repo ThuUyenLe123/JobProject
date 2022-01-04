@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load is_job_saved %}
+{% block title %}
+    Job details
+{% endblock %}
+
+{% block content %}
+    <section class="img-section">
+        <div class="company container">
+            <figure class="company-img">
+                <img src="{% static 'img/bg-price.jpeg' %}"/>
+            </figure>
+        </div>
+    </section>
+    <section class="site-section">
+        <div class="container">
+            <div class="row align-items-center mb-5">
+                <div class="col-lg-8 mb-4 mb-lg-0">
+                    <div class="d-flex align-items-center">
+                        <div class="border p-2 mr-3 rounded headers__logo__img">
+                            <picture>
+                                <img src="{{ job.company.image.url }}"
+                                 alt="Free Website Template By Free-Template.co">
+                            </picture>
+                            
+                        </div>
+                        <div>
+                            <h2>{{ job.title }}</h2>
+                            <div>
+                                <span class="ml-0 mr-2 mb-2"><span
+                                        class="icon-briefcase mr-2"></span>{{ job.company }}</span>
+                                <span class="m-2"><span class="icon-room mr-2"></span>{{ job.company.location }}</span>
+                                <span class="m-2"><span class="icon-clock-o mr-2"></span>
+                                {% if job.type == '1' %}
+                                <span class="badge featured-badge badge-success">Full time</span>
+                                {% elif job.type == '2' %}
+                                <span class="badge featured-badge badge-primary">Part time</span>
+                                {% else %}
+                                <span style="color: #ffffff;" class="badge featured-badge badge-warning">Internship</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="row">
+                        <div class="col-6">
+                            <a href="{% url 'jobs:apply-job' job.id %}" class="btn btn-outline-white-primary">Apply Now</a>
+                        </div>
+                        <div class="col-6">
+                            {% if request.user.is_authenticated %}
+                                {% is_job_saved job request.user as is_saved %}
+                                {% if is_saved %}
+                                    <button class="btn btn-outline-white-primary"><i class="fa fa-star"></i>Save</button>
+                                {% else %}
+                                    <form action="{% url 'jobs:job-save' job.id %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="job" value="{{ job.id }}">
+                                        <button class="btn btn-outline-white-primary"><i class="fa fa-star-o"></i>Save</button>
+                                    </form>
+                                {% endif %}
+                            {% else %}
+                                <form action="{% url 'jobs:job-save' job.id %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="job" value="{{ job.id }}">
+                                    <button class="btn btn-outline-white-primary"><i class="fa fa-star-o"></i>Save</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            </div>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="mb-5">
+                        <figure class="mb-5"><img src="{% static 'img/company.jpg' %}"
+                                                  alt="Free Website Template by Free-Template.co"
+                                                  class="img-fluid rounded"></figure>
+                        <h3 class="h5 d-flex align-items-center mb-4 text-primary"><span
+                                class="icon-align-left mr-3"></span>Job
+                            Description</h3>
+                        <p>{{ job.description }}</p>
+                    </div>
+
+                    <div class="mb-5">
+                        <h3 class="h5 d-flex align-items-center mb-4 text-primary"><span class="icon-book mr-3"></span>Job Requirements
+                        </h3>
+                        <ul class="list-unstyled m-0 p-0">
+                            <li class="d-flex align-items-start mb-2"><span
+                                    class="icon-check_circle mr-2 text-muted"></span><span>{{ job.job_requirements }}</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-5">
+                        <h3 class="h5 d-flex align-items-center mb-4 text-primary"><span class="icon-book mr-3"></span>Experience
+                        </h3>
+                        <ul class="list-unstyled m-0 p-0">
+                            <li class="d-flex align-items-start mb-2"><span
+                                    class="icon-check_circle mr-2 text-muted"></span><span>{{ job.experience }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                
+                </div>
+                <div class="col-lg-4">
+                    <div class="bg-light p-3 border rounded mb-4">
+                        <h3 class="text-primary  mt-3 h5 pl-3 mb-3 ">Job Summary</h3>
+                        <ul class="list-unstyled pl-3 mb-0">
+                            <li class="mb-2"><strong class="text-black">Posted
+                                on:</strong> {{ job.created_at|timesince }} ago
+                            </li>
+                            <li class="mb-2">
+                                {% if job.type == '1' %}
+                                <strong class="text-black">Employment Status:</strong> Full time
+                                {% elif job.type == '2' %}
+                                <strong class="text-black">Employment Status:</strong> Part time
+                                {% else %}
+                                <strong class="text-black">Employment Status:</strong> Internship
+                                {% endif %}
+        
+                            </li>
+                            <li class="mb-2"><strong class="text-black">Experience:</strong> {{ job.experience }}</li>
+                            <li class="mb-2"><strong class="text-black">Job Location:</strong> {{ job.location }}</li>
+                            <li class="mb-2"><strong class="text-black">Salary:</strong> {{ job.salary }}</li>
+                            <li class="mb-2">
+                                {% if job.gender == '1' %}
+                                <strong class="text-black">Gender:</strong> Male
+                                {% elif job.gender == '2' %}
+                                <strong class="text-black">Gender:</strong> Female
+                                {% else %}
+                                <strong class="text-black">Gender:</strong> Any
+                                {% endif %}
+                            </li>
+                            <li class="mb-2"><strong class="text-black">Application
+                                Deadline:</strong> {{ job.last_date|date}}</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-light p-3 border rounded">
+                        <h3 class="text-primary  mt-3 h5 pl-3 mb-3 ">Share</h3>
+                        <div class="px-3">
+                        <a href="{{ job.website }}" data-toggle="tooltip" data-placement="top" title="Website"
+                           class="link">
+                            <i class="fa fa-link"></i>
+                        </a>
+                        <a href="#" data-toggle="tooltip" data-placement="top" title="Twitter" class="twitter">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                        <a href="#" data-toggle="tooltip" data-placement="top" title="Facebook" class="facebook">
+                            <i class="fa fa-facebook"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

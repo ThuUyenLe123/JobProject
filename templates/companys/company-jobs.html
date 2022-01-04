@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Company details
+{% endblock %}
+
+{% block content %}
+    <section class="img-section">
+        <div class="company container">
+            <figure class="company-img">
+                <img src="{% static 'img/com.jpeg' %}"/>
+            </figure>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="box">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-sm-3 col-4 col-md-3">
+                                <div class="border p-2 mr-5 rounded headers__logo__img">
+                                    <picture>
+                                        <img src="{{company.image.url }}"
+                                         alt="Free Website Template By Free-Template.co">
+                                    </picture>
+                                    
+                                </div>
+                            </div>
+    
+                            <div class="col-6 ">
+                                <h2>{{ company.company_name }}</h2>
+                                <div class = "mr-2">
+                                    <div class="ml-0 mr-2 mb-2">
+                                        <i class="fa fa-map-marker mr-2"></i>
+                                         Address: {{ company.address }}<span>, </span> {{company.location}}
+                                    </div>
+                                    <div class="ml-0 mr-2 mb-2">
+                                        <i class="fa fa-users mr-2"></i>
+                                        Size: {{ company.amount }}
+                                    </div>
+                                    <div class="ml-0 mr-2 mb-2">
+                                        <i class="fa fa-globe mr-2"></i></i>
+                                        Website: {{company.website}}
+                                    </div>
+        
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+    </section>  
+    <section class="comment-section">
+        <div class="container">
+            <h3 class="text-center heading">Vị trí đang tuyển dụng</h2>   
+                {% for job in jobs %}
+                    <div class="job-listing  job-listing--last">
+                        <div class="row">
+                            <div class="col-md-12 col-lg-6">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <img src="{{ job.company.image.url }}"
+                                            alt="ShareBoardd " class="img-fluid">
+                                    </div>
+                                    <div class="col-6">
+                                        <h4 class="job__title">
+                                            <a href="{% url 'jobs:jobs-detail' job.id %}">{{ job.title }}</a>
+                                        </h4>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-10 col-md-3 col-lg-2 ml-auto">
+                                <div><i class="fa fa-map-marker job__location"></i>
+                                {{ job.company.location }}
+                                </div>
+                                <div>
+                                    <i class="fa fa-calendar job__location"></i>{{job.last_date}}
+                                </div>
+                                
+                            </div>
+                            <div class="col-10 col-md-3 col-lg-3 ml-auto">
+                                <div>
+                                    <i class="fa fa-dollar job__location"></i>
+                                    Salary: {{ job.salary }}
+                                </div>
+                                <div>
+                                    <i class="fa fa-briefcase job__location"></i>
+                                    Experience: {{ job.experience }}
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+                
+
+           </div>
+        </div>
+    </section>
+    
+    <section class="comment-section">  
+        <div class="container bootstrap snippets bootdey">
+            <div class="col-sm-12">          
+                <div class="box-info full">
+                    <div class="tab-content">
+                        <div class="tab-pane active animated fadeInRight" id="comments">
+                            <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; "><div class="scroll-widget">
+                                <div class="rating-star mg-left">
+                                    <h3 class="heading">Reviews</h3>
+
+                                    <form action="{% url 'jobs:addcomment' company.id %}" method="post">
+                                        {% csrf_token %}
+                                        <h5>Write Your Review</h5>
+                                        <div>
+                                            <label>How do you rate this company?</label>
+                                            <br>
+                                            <div class="rate">
+                                                <input type="radio" name="rating" id="rating10" value="5" required /><label for="rating10" title="5"></label>
+                                                <input type="radio" name="rating" id="rating9" value="4.5" required /><label for="rating9" title="4.5" class="half"></label>
+                                                <input type="radio" name="rating" id="rating8" value="4" required /><label for="rating8" title="4"></label>
+                                                <input type="radio" name="rating" id="rating7" value="3.5" required /><label for="rating7" title="3.5" class="half"></label>
+                                                <input type="radio" name="rating" id="rating6" value="3" required /><label for="rating6" title="3"></label>
+                                                <input type="radio" name="rating" id="rating5" value="2.5" required /><label for="rating5" title="2.5" class="half"></label>
+                                                <input type="radio" name="rating" id="rating4" value="2" required /><label for="rating4" title="2"></label>
+                                                <input type="radio" name="rating" id="rating3" value="1.5" required /><label for="rating3" title="1.5" class="half"></label>
+                                                <input type="radio" name="rating" id="rating2" value="1" required /><label for="rating2" title="1"></label>
+                                                <input type="radio" name="rating" id="rating1" value="0.5" required /><label for="rating1" title="0.5" class="half"></label>
+                                            </div>
+                                            <br>
+                                            <br>
+                                            
+                                            <textarea name="comment" id="comment" placeholder="Add new review" rows="4" class="form-control">{{ comment.comment }}</textarea>
+                                            <br>
+                                            {% if request.user.is_authenticated and request.user.role == 'employee' %}
+                                                <div class="row float-right">
+                                                    <div class="col-lg-3 ">
+                                                        <button type="submit" class="btn btn-success"><i class="fa fa-magic"></i>
+                                                            POST
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                <p>You must be logged in to post a review. <span><a href="{% url 'accounts:login' %}">Login now</a></span></p>
+                                            {% endif %}
+                                         
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <ul class="media-list review-list">
+                                    <div class="rating-star mg-top">
+                                        <span class="count-review">{{company.countReview}} reviews</span>
+                                        <span> (</span>
+                                        <span>
+                                            <i class="fa fa-star{% if company.averageReview < 0.5 %}-o{% elif company.averageReview >= 0.5 and company.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if company.averageReview < 1.5 %}-o{% elif company.averageReview >= 1.5 and company.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if company.averageReview < 2.5 %}-o{% elif company.averageReview >= 2.5 and company.averageReview < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if company.averageReview < 3.5 %}-o{% elif company.averageReview >= 3.5 and company.averageReview < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if company.averageReview < 4.5 %}-o{% elif company.averageReview >= 4.5 and company.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                        </span>
+                                        <span>)</span>
+                                    </div>
+
+
+                                {% for comment in comments %}
+                                <li class="media">
+                                    <div class="img-user">
+                                        <div class="inner">
+                                            <img class="img-fluid" src="{{comment.employee.image.url }}" alt="Avatar">
+                                        </div>
+                                    </div>
+                                    <a class="pull-left" href="#fakelink">
+                                        
+                                    </a>
+                                   
+                                    <div class="media-body">
+                                        <h4 class="media-heading"><a href="#">{{ comment.employee.user.get_full_name }}</a><small class="float-right">{{ comment.created_at|timesince }}</small></h4>
+                                        <div class="rating-star">
+                                            <span>
+                                                <i class="fa fa-star{% if comment.rating == 0.5 %}-half-o{% elif comment.rating < 1 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 1.5 %}-half-o{% elif comment.rating < 2 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 2.5 %}-half-o{% elif comment.rating < 3 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 3.5 %}-half-o{% elif comment.rating < 4 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 4.5 %}-half-o{% elif comment.rating < 5 %}-o {% endif %}" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
+                                        <p>{{comment.comment}}
+                                            {% if request.user.id == comment.employee.user.id %}
+                                            <small class="float-right">
+                                                <form method="post" action="{% url 'jobs:comment-delete' comment.id %}")>
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="comment_id" value="{{comment.id }}" />
+                                                    <button type="submit" class="btn btn-info" onclick="return confirm('Are you sure you want to delete?');">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>                                        
+                                                </form>
+                                                <a href="{% url 'jobs:comment-update' comment.id %}" class="btn btn-success">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                            </small>
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </li>
+                               
+                                {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <br>
+             
+            </div>
+            
+        </div>	
+                      
+    </section>
+    
+    
+{% endblock %}
+
+

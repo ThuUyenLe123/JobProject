@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block title %}
+    Applicants
+{% endblock %}
+{% load static %}
+{% load is_already_saved %}
+
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="row">
+                
+                <div class="col-sm-0 col-lg-2 ">
+                    <div class="form-control box-object">
+                        <div class="cat_title"><label for="certificate"><b>Certificate</b></label></div>
+                        <ul name="certificate" id="certificate" class="ul-category">
+                            {% for certificate in certificates %}
+                            <li value="{{ certificate.id }}">
+                                <a href="{% url 'jobs:certificate-applicants' certificate.id %}">{{ certificate.certificate }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="form-control box-object box-2">
+                        <div class="cat_title"><label for="experience"><b>Experience</b></label></div>
+                        <ul name="category" id="category" class="ul-category">
+                            {% for experience in experiences %}
+                            <li value="{{ experience.id }}">
+                                <a href="{% url 'jobs:experience-applicants' experience.id %}">{{ experience.name }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="form-control box-object">
+                        <div class="cat_title"><label for="category"><b>Category</b></label></div>
+                        <div class="lst_box">
+                            <ul name="category" id="category" class="ul-category">
+                                {% for category in categories %}
+                                <li value="{{ category.id }}">
+                                    <a href="{% url 'jobs:category-applicants' category.id %}">{{ category.category }}</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                            
+                    </div>
+                </div>
+                
+                <div class="col-sm-4 col-lg-10 box">
+                    <h3 class="heading">All applicants who applied for your position</h3>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-client-dashboard">
+                            <thead>
+                            <tr>
+                                <th>Job Application</th>
+                                <th>Salary</th>
+                                <th>Location</th>
+                                <th>Experience</th>
+                                <th>Posted day</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for applicant in applicants %}
+
+                                <tr>
+                                    <th><a href="{% url 'jobs:employer-dashboard-applicants' applicant.job.id %}"> {{ applicant.job.title }}</a>
+                                        <div class="paddingTop13"><i class="fa fa-user job__location"></i>{{ applicant.applicant.user.get_full_name }} </div>
+                                    </th>
+                                    
+                                    <td>
+                                        <i class="fa fa-dollar job__location"></i>
+                                        <div>{{ applicant.salary }}</div>
+                                    </td>
+                                    <td >
+                                        <i class="fa fa-map-marker job__location"  ></i>
+                                        <div>{{ applicant.location }}</div>
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-bar-chart job__location"></i>
+                                        <div>{{ applicant.experience }}</div>
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-clock-o job__location" ></i>
+                                        <div>{{ applicant.created_at.astimezone }}</div>
+                                    </td>
+                                    <td>
+                                        <div class="save-applicant">
+                                            {% if request.user.is_authenticated %}
+                                                {% is_already_saved applicant request.user as is_saved %}
+                                                {% if is_saved %}
+                                                    <button class="btn btn-outline-white-primary"><i class="fa fa-heart"></i></button>
+                                                {% else %}
+                                                    <form action="{% url 'jobs:applicant-save' applicant.id %}" method="post">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="applicant" value="{{ applicant.id }}">
+                                                        <button class="btn btn-outline-white-primary"><i class="fa fa-heart-o"></i></button>
+                                                    </form>
+                                                {% endif %}
+                                            {% else %}
+                                                <form action="{% url 'jobs:applicant-save' applicant.id %}" method="post">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="applicant" value="{{ applicant.id }}">
+                                                    <button class="btn btn-outline-white-primary"><i class="fa fa-heart-o"></i></button>
+                                                </form>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                {% if is_paginated %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-4 mb-4">
+                                <ul class="pagination">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a href="?page={{ page_obj.previous_page_number }}"
+                                               class="page-link">&laquo;</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link">&laquo;</a>
+                                        </li>
+                                    {% endif %}
+                                    {% for i in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == i %}
+                                            <li class="page-item active">
+                                                <a class="page-link">{{ i }}</a>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item">
+                                                <a href="?page={{ i }}" class="page-link">{{ i }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a href="?page={{ page_obj.next_page_number }}"
+                                               class="page-link">&raquo;</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link">&raquo;</a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+            
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

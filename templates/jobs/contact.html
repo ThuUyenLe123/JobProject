@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+
+{% block content %}
+
+    <section class="bg-light-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-7 mx-auto">
+                    <h1 class="heading">CONTACT US</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-7 mx-auto">
+                    {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                    <strong>{{ field.name }} {{ error|escape }}</strong>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                    <form id="job-main-form" method="post" action="" class="">
+                        {% csrf_token %}
+                        {{  form|crispy }}
+                        
+                        <div class="row">
+                            <div class="col-lg-12 text-center">
+                                <hr>
+                                <button type="submit" class="btn btn-success"><i class="fa fa-magic"></i>
+                                    SEND
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

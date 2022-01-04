@@ -1,0 +1,13 @@
+
+
+<center>
+    <form method="post" action="")>
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <p>Are you sure you want to delete "{{ object.title }}"?</p>
+            <input type="submit" value="OK">
+        </fieldset>
+        
+    </form>
+</center>
+

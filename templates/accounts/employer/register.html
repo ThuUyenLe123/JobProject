@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Employer Register
+{% endblock %}
+
+{% block content %}
+<section class="bg-light-gray">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7 mx-auto">
+                <h1 class="heading">New Account</h1>
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+            {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger alert-dismissable">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger alert-dismissable">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <form method="POST" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p class="lead">Not our registered yet?</p>
+                        <p class="text-muted">If you have any questions, please feel free to <a href="{% url 'jobs:contact' %}">contact us</a>,
+                        our customer service center is working for you 24/7.</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 text-label">
+                        <label>Thông tin đăng nhập</label>
+                    </div>
+                </div>
+                {% csrf_token %}
+                {{ user_form|crispy }} <!-- User form -->
+                <div class="row">
+                    <div class="col-lg-12 text-label">
+                        <label style="text-align: center;">Thông tin công tin</label>
+                    </div>
+                </div>
+                {{ profile_form|crispy }} <!-- Profile form -->
+                    
+                <div class="row">
+                    <div class="col-lg-12">
+                        <hr>
+                        <div class="checkbox text-center">
+                            <label>
+                                <input type="checkbox"> I agree with the <a href="#">Terms and conditions</a>.
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <button type="submit" class="btn btn-info"><i class="fa fa-user-md"></i>
+                            Register
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

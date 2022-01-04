@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+{% block title %}
+    Update Review
+{% endblock title %}
+
+{% block content %}
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <strong>{{ field.name }} {{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+                
+                <section class="comment-section">
+                    <div class="container bootstrap snippets bootdey">
+                        <div class="col-sm-12">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <h5>Update Your Review</h5>
+                                <div>
+                                    <label>How do you rate this company?</label>
+                                    <br>
+                                    <div class="rate">
+                                        <input type="radio" name="rating" id="rating10" value="5" required /><label for="rating10" title="5"></label>
+                                        <input type="radio" name="rating" id="rating9" value="4.5" required /><label for="rating9" title="4.5" class="half"></label>
+                                        <input type="radio" name="rating" id="rating8" value="4" required /><label for="rating8" title="4"></label>
+                                        <input type="radio" name="rating" id="rating7" value="3.5" required /><label for="rating7" title="3.5" class="half"></label>
+                                        <input type="radio" name="rating" id="rating6" value="3" required /><label for="rating6" title="3"></label>
+                                        <input type="radio" name="rating" id="rating5" value="2.5" required /><label for="rating5" title="2.5" class="half"></label>
+                                        <input type="radio" name="rating" id="rating4" value="2" required /><label for="rating4" title="2"></label>
+                                        <input type="radio" name="rating" id="rating3" value="1.5" required /><label for="rating3" title="1.5" class="half"></label>
+                                        <input type="radio" name="rating" id="rating2" value="1" required /><label for="rating2" title="1"></label>
+                                        <input type="radio" name="rating" id="rating1" value="0.5" required /><label for="rating1" title="0.5" class="half"></label>
+                                    </div>
+                                    <br>
+                                    <br>
+                                    
+                                    <textarea name="comment" id="comment" placeholder="Add new comment" rows="4" class="form-control">{{ comment.comment }}</textarea>
+                                    <br>
+                                    {% if request.user.is_authenticated and request.user.role == 'employee' %}
+                                        <div class="row float-right">
+                                            <div class="col-lg-3 ">
+                                                <button type="submit" class="btn btn-success"><i class="fa fa-magic"></i>
+                                                    POST
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <p>You must be logged in to post a review. <span><a href="{% url 'accounts:login' %}">Login now</a></span></p>
+                                    {% endif %}
+                                    
+                                    
+                                </div>
+                
+                            </form>
+                            
+                        </div>
+                    </div>
+                </section>    
+                
+            </div>
+        </div>
+    </div>
+    
+            
+</section>
+{% endblock content %}

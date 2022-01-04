@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<section>
+    <div class="col-lg-6 offset-3">
+        <div class="box">
+            <h3 class="heading">Upload CV</h3>
+            <form action="" method="POST" class="" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+                {{ form|crispy }}  
+    
+                <div >
+                    <button type="submit" class="btn btn-block btn-success btn-md ">Upload</button>
+                </div>  
+            </form>
+                        
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
+
+
+

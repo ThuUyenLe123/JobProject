@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+{% block title %}
+    Add A New Position
+{% endblock title %}
+
+{% block content %}
+<section class="bg-light-gray">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="heading">Add a new position</h1>
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <strong>{{ field.name }} {{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+                <form method="post" action="" >
+                    {%  csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h4>Job details</h4>
+                            <p class="text-muted text-small">Code and test programming for software and mobile apps and etc. Develop and deploy computer applications. Execute code builds to test and production environments. Fix bugs in existing code.</p>
+                            <hr>
+                        </div>
+                    </div>
+                    {{  form|crispy }}
+                    
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <hr>
+                            <div class="checkbox text-center">
+                                <label>
+                                    <input type="checkbox"> I agree with the <a href="#">Terms and conditions</a>.
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 text-center">
+                            <hr>
+                            <button type="submit" class="btn btn-success"><i class="fa fa-magic"></i>
+                                Save and publish
+                            </button>
+                        </div>
+                    </div>
+                    
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

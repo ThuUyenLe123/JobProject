@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+    All jobs
+{% endblock %}
+
+{% block content %}
+<section class="img-section">
+    <div class="company container">
+        <figure class="company-img">
+            <img src="{% static 'img/com.jpeg' %}"/>
+        </figure>
+    </div>
+</section>
+<section>
+    <div class="box">
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-8 mb-4 mb-lg-0">
+                <div class="d-flex align-items-center">
+                    <div class="border p-2 d-inline-block mr-3 rounded">
+                        <img src="{% static 'img/job.png' %}"
+                             alt="Free Website Template By Free-Template.co">
+                    </div>
+                    <div>
+                        <div>
+                            <h2>{{ company.company_name }}</h2>
+                            <div class="rating-star">
+                                <span>Reviews (</span>
+                                <span>
+                                    <i class="fa fa-star{% if company.averageReview < 0.5 %}-o{% elif company.averageReview >= 0.5 and company.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                    <i class="fa fa-star{% if company.averageReview < 1.5 %}-o{% elif company.averageReview >= 1.5 and company.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                    <i class="fa fa-star{% if company.averageReview < 2.5 %}-o{% elif company.averageReview >= 2.5 and company.averageReview < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                    <i class="fa fa-star{% if company.averageReview < 3.5 %}-o{% elif company.averageReview >= 3.5 and company.averageReview < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                    <i class="fa fa-star{% if company.averageReview < 4.5 %}-o{% elif company.averageReview >= 4.5 and company.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                </span>
+                                <span>)</span>
+                                <span class="count-review">{{company.countReview}} reviews</span>
+                            </div>
+                        </div>
+                        
+                        <div class = mr-2>
+                            <div class="ml-0 mr-2 mb-2">
+                                <i class="fa fa-map-marker mr-2"></i>
+                                 Address: {{ company.address }}<span>, </span> {{company.user.location}}
+                            </div>
+                            <div class="ml-0 mr-2 mb-2">
+                                <i class="fa fa-users mr-2"></i>
+                                Size: {{ company.amount }}
+                            </div>
+                            <div class="ml-0 mr-2 mb-2">
+                                <i class="fa fa-globe mr-2"></i></i>
+                                Website: {{company.website}}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    </section>
+    <section class="comment-section">
+        <div class="container bootstrap snippets bootdey">
+            <div class="col-sm-12">
+                <form action="{% url 'jobs:addcomment' company.id %}" method="POST">
+                    {% csrf_token %}
+                    <h5>Write Your Review</h5>
+                    <div>
+                        <label>How do you rate this company?</label>
+                        <br>
+                        <div class="rate">
+                            <input type="radio" name="rating" id="rating10" value="5" required /><label for="rating10" title="5"></label>
+                            <input type="radio" name="rating" id="rating9" value="4.5" required /><label for="rating9" title="4.5" class="half"></label>
+                            <input type="radio" name="rating" id="rating8" value="4" required /><label for="rating8" title="4"></label>
+                            <input type="radio" name="rating" id="rating7" value="3.5" required /><label for="rating7" title="3.5" class="half"></label>
+                            <input type="radio" name="rating" id="rating6" value="3" required /><label for="rating6" title="3"></label>
+                            <input type="radio" name="rating" id="rating5" value="2.5" required /><label for="rating5" title="2.5" class="half"></label>
+                            <input type="radio" name="rating" id="rating4" value="2" required /><label for="rating4" title="2"></label>
+                            <input type="radio" name="rating" id="rating3" value="1.5" required /><label for="rating3" title="1.5" class="half"></label>
+                            <input type="radio" name="rating" id="rating2" value="1" required /><label for="rating2" title="1"></label>
+                            <input type="radio" name="rating" id="rating1" value="0.5" required /><label for="rating1" title="0.5" class="half"></label>
+                        </div>
+                        <br>
+                        <br>
+                        
+                        <textarea name="comment" id="comment" placeholder="Add new review" rows="4" class="form-control">{{ comment.comment }}</textarea>
+                        <br>
+                        {% if request.user.is_authenticated and request.user.role == 'employee' %}
+                            <div class="row float-right">
+                                <div class="col-lg-3 ">
+                                    <button type="submit" class="btn btn-success"><i class="fa fa-magic"></i>
+                                        POST
+                                    </button>
+                                </div>
+                            </div>
+                        {% else %}
+                            <p>You must be logged in to post a review. <span><a href="{% url 'accounts:login' %}">Login now</a></span></p>
+                        {% endif %}
+                        
+                        
+                    </div>
+    
+                </form>
+                
+            </div>
+        </div>
+    </section>    
+    <section class="comment-section">  
+        <div class="container bootstrap snippets bootdey">
+            <div class="col-sm-12">          
+                <div class="box-info full">
+                    <div class="tab-content">
+                        <div class="tab-pane active animated fadeInRight" id="comments">
+                            <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; "><div class="scroll-widget">
+                                <h3 class="heading">We have <span class=>{{ comments.count }}</span> reviews</h3>
+                                <ul class="media-list">
+                                {% for comment in comments %}
+                                <li class="media">
+                                    <a class="pull-left" href="#fakelink">
+                                        <img class="media-object" src="https://bootdey.com/img/Content/User_for_snippets.png" alt="Avatar">
+                                    </a>
+                                   
+                                    <div class="media-body">
+                                        <h4 class="media-heading"><a href="#">{{ comment.user.get_full_name }}</a><small class="float-right">{{ comment.created_at|timesince }}</small></h4>
+                                        <div class="rating-star">
+                                            <span>
+                                                <i class="fa fa-star{% if comment.rating == 0.5 %}-half-o{% elif comment.rating < 1 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 1.5 %}-half-o{% elif comment.rating < 2 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 2.5 %}-half-o{% elif comment.rating < 3 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 3.5 %}-half-o{% elif comment.rating < 4 %}-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if comment.rating == 4.5 %}-half-o{% elif comment.rating < 5 %}-o {% endif %}" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
+                                        <p>{{comment.comment}}
+                                            <small class="float-right">
+                                                <button class="btn-info"><i class="fa fa-edit"></i>Edit</button>
+                                                <button class="btn-primary"><i class="fa fa-trash"></i>Delete</button>
+                                            </small>
+                                        </p>
+                                    </div>
+                                </li>
+                               
+                                {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <br>
+             
+            </div>
+            
+        </div>	
+                      
+    </section>
+
+{% endblock %}
+
+
